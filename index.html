@@ -76,7 +76,6 @@
     function handleCredentialResponse(response) {
         const accessToken = response.access_token;  // Grab access token from response
         gapi.load('client', () => {
-            gapi.client.setApiKey("AIzaSyCn-ygeGqzB_sjvXJ2Oy72Qj3mLqMVNqis");  // Not Admin SDK API key
             gapi.client.init({
                 // your client init configuration here
                 'clientId': '374006526743-lqkil23fnge0gpf3hbehn9d5mo6q553r.apps.googleusercontent.com',

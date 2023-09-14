@@ -4,8 +4,12 @@
   <meta charset="UTF-8">
   <title>Chromebook OU Mover</title>
   <!-- (Rest of your head content) -->
-  <script src="https://apis.google.com/js/platform.js"></script>
+  <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+
   <script>
+
+    var GoogleAuth;
+
     // Initialize gapi.client
     function init() {
       gapi.load('client:auth2', initClient);
@@ -22,6 +26,8 @@
         GoogleAuth = gapi.auth2.getAuthInstance();
         // Listen for sign-in state changes.
         GoogleAuth.isSignedIn.listen(updateSigninStatus);
+      }, function(error) {
+        console.log(error);
       });
     }
 

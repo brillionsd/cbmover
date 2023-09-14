@@ -3,6 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <title>Chromebook OU Mover</title>
+  <!-- (Rest of your head content) -->
+  <script src="https://apis.google.com/js/platform.js"></script>
+  <script>
+    // Initialize gapi.client
+    function init() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function initClient() {
+      // Initialize the Google API client with desired properties
+      gapi.client.init({
+        apiKey: 'YOUR_API_KEY_HERE',
+        clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
+        scope: 'https://www.googleapis.com/auth/admin.directory.device.chromeos https://www.googleapis.com/auth/admin.directory.orgunit'
+      }).then(function () {
+        // Initialize and make the API request.
+        GoogleAuth = gapi.auth2.getAuthInstance();
+        // Listen for sign-in state changes.
+        GoogleAuth.isSignedIn.listen(updateSigninStatus);
+      });
+    }
+  </script>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <style>
     /* Limit the log table height and make it scrollable */
@@ -62,8 +84,6 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
 
   <script>
     var GoogleAuth; // Google Auth object.

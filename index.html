@@ -5,6 +5,14 @@
   <title>Chromebook OU Mover</title>
   <!-- (Rest of your head content) -->
   <script>
+
+    var GoogleAuth;
+
+    function handleCredentialResponse(response) {
+      // Handle the credential response, and sign-in the user with gapi.client.
+      GoogleAuth.signIn();
+    }
+
     function updateSigninStatus(isSignedIn) {
       if (isSignedIn) {
         document.getElementById("navbar").classList.remove("bg-danger");
@@ -94,9 +102,9 @@
     }
 
     function signOut() {
-      GoogleAuth.signOut();
+      GoogleAuth.signOut(); // Sign out of Google Auth2
+      google.accounts.id.disableAutoSelect(); // Sign out of GSI
     }
-
 
     async function moveOU() {
       const ou = document.getElementById('ouSelect').value;

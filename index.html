@@ -14,8 +14,8 @@
     function initClient() {
       // Initialize the Google API client with desired properties
       gapi.client.init({
-        apiKey: 'YOUR_API_KEY_HERE',
-        clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
+        apiKey: 'AIzaSyCEeeu2dCVBUG_gkfOjxSeKI8ue2PCqkic',
+        clientId: '374006526743-lqkil23fnge0gpf3hbehn9d5mo6q553r.apps.googleusercontent.com',
         scope: 'https://www.googleapis.com/auth/admin.directory.device.chromeos https://www.googleapis.com/auth/admin.directory.orgunit'
       }).then(function () {
         // Initialize and make the API request.
@@ -23,6 +23,22 @@
         // Listen for sign-in state changes.
         GoogleAuth.isSignedIn.listen(updateSigninStatus);
       });
+    }
+
+    function updateSigninStatus(isSignedIn) {
+      if (isSignedIn) {
+        document.getElementById("navbar").classList.remove("bg-danger");
+        document.getElementById("navbar").classList.add("bg-success");
+        document.querySelector(".navbar-brand").textContent = "Authorized";
+        document.getElementById("authButton").textContent = "Sign Out";
+        document.getElementById("authButton").onclick = GoogleAuth.signOut;
+      } else {
+        document.getElementById("navbar").classList.remove("bg-success");
+        document.getElementById("navbar").classList.add("bg-danger");
+        document.querySelector(".navbar-brand").textContent = "Unauthorized";
+        document.getElementById("authButton").textContent = "Sign In";
+        document.getElementById("authButton").onclick = GoogleAuth.signIn;
+      }
     }
   </script>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -86,37 +102,6 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
   <script>
-    var GoogleAuth; // Google Auth object.
-
-    function initClient() {
-      gapi.client.init({
-        'apiKey': 'AIzaSyCEeeu2dCVBUG_gkfOjxSeKI8ue2PCqkic',
-        'clientId': '374006526743-lqkil23fnge0gpf3hbehn9d5mo6q553r.apps.googleusercontent.com',
-        'scope': 'https://www.googleapis.com/auth/admin.directory.device.chromeos https://www.googleapis.com/auth/admin.directory.orgunit',
-        'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/admin/directory_v1/rest']
-      }).then(() => {
-        GoogleAuth = gapi.auth2.getAuthInstance();
-        GoogleAuth.isSignedIn.listen(updateSigninStatus);
-        updateSigninStatus(GoogleAuth.isSignedIn.get());
-      });
-    }
-
-    function updateSigninStatus(isSignedIn) {
-      if (isSignedIn) {
-        document.getElementById("navbar").classList.remove("bg-danger");
-        document.getElementById("navbar").classList.add("bg-success");
-        document.querySelector(".navbar-brand").textContent = "Authorized";
-        document.getElementById("authButton").textContent = "Sign Out";
-        document.getElementById("authButton").onclick = GoogleAuth.signOut;
-      } else {
-        document.getElementById("navbar").classList.remove("bg-success");
-        document.getElementById("navbar").classList.add("bg-danger");
-        document.querySelector(".navbar-brand").textContent = "Unauthorized";
-        document.getElementById("authButton").textContent = "Sign In";
-        document.getElementById("authButton").onclick = GoogleAuth.signIn;
-      }
-    }
-
     function signIn() {
       GoogleAuth.signIn();
     }

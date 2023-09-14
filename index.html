@@ -73,13 +73,23 @@
   <script>
 
     function handleCredentialResponse(response) {
-      // Handle the credential response.
-      // The response object should contain an ID token, which you can use
-      // to authenticate the user on your server.
-
-      // After server-side validation of the ID token, update UI accordingly
-      updateSigninStatus(true);
+        const accessToken = response.access_token;  // Grab access token from response
+        gapi.load('client', () => {
+            gapi.client.setApiKey("AIzaSyCn-ygeGqzB_sjvXJ2Oy72Qj3mLqMVNqis");  // Not Admin SDK API key
+            gapi.client.init({
+                // your client init configuration here
+                'clientId': '374006526743-lqkil23fnge0gpf3hbehn9d5mo6q553r.apps.googleusercontent.com',
+                'scope': 'https://www.googleapis.com/auth/admin.directory.device.chromeos',  // Replace with the Admin SDK scopes you need
+                'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/admin/directory_v1/rest'],
+            }).then(() => {
+                gapi.auth.setToken({
+                    'access_token': accessToken,
+                });
+                updateSigninStatus(true);
+            });
+        });
     }
+
 
     function updateSigninStatus(isSignedIn) {
       if (isSignedIn) {

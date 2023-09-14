@@ -70,8 +70,8 @@
 
     function initClient() {
       gapi.client.init({
-        'apiKey': 'YOUR_API_KEY',
-        'clientId': 'YOUR_CLIENT_ID',
+        'apiKey': 'AIzaSyCEeeu2dCVBUG_gkfOjxSeKI8ue2PCqkic',
+        'clientId': '374006526743-lqkil23fnge0gpf3hbehn9d5mo6q553r.apps.googleusercontent.com',
         'scope': 'https://www.googleapis.com/auth/admin.directory.device.chromeos https://www.googleapis.com/auth/admin.directory.orgunit',
         'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/admin/directory_v1/rest']
       }).then(() => {
@@ -105,7 +105,7 @@
       GoogleAuth.signOut();
     }
 
-    
+
     async function moveOU() {
       const ou = document.getElementById('ouSelect').value;
       const assetId = document.getElementById('assetId').value;

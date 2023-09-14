@@ -63,33 +63,49 @@
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+
   <script>
-    // Simulated authorization function
-    function signIn() {
-      // Simulate a sign-in, replace this with real Google Sign-In code
-      setTimeout(() => {
-        // Assume successful authorization
+    var GoogleAuth; // Google Auth object.
+
+    function initClient() {
+      gapi.client.init({
+        'apiKey': 'YOUR_API_KEY',
+        'clientId': 'YOUR_CLIENT_ID',
+        'scope': 'https://www.googleapis.com/auth/admin.directory.device.chromeos https://www.googleapis.com/auth/admin.directory.orgunit',
+        'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/admin/directory_v1/rest']
+      }).then(() => {
+        GoogleAuth = gapi.auth2.getAuthInstance();
+        GoogleAuth.isSignedIn.listen(updateSigninStatus);
+        updateSigninStatus(GoogleAuth.isSignedIn.get());
+      });
+    }
+
+    function updateSigninStatus(isSignedIn) {
+      if (isSignedIn) {
         document.getElementById("navbar").classList.remove("bg-danger");
         document.getElementById("navbar").classList.add("bg-success");
         document.querySelector(".navbar-brand").textContent = "Authorized";
         document.getElementById("authButton").textContent = "Sign Out";
-        document.getElementById("authButton").onclick = signOut;
-      }, 2000);
-    }
-
-    // Simulated sign-out function
-    function signOut() {
-      // Simulate a sign-out, replace this with real Google Sign-Out code
-      setTimeout(() => {
-        // Assume successful sign-out
+        document.getElementById("authButton").onclick = GoogleAuth.signOut;
+      } else {
         document.getElementById("navbar").classList.remove("bg-success");
         document.getElementById("navbar").classList.add("bg-danger");
         document.querySelector(".navbar-brand").textContent = "Unauthorized";
         document.getElementById("authButton").textContent = "Sign In";
-        document.getElementById("authButton").onclick = signIn;
-      }, 2000);
+        document.getElementById("authButton").onclick = GoogleAuth.signIn;
+      }
     }
 
+    function signIn() {
+      GoogleAuth.signIn();
+    }
+
+    function signOut() {
+      GoogleAuth.signOut();
+    }
+
+    
     async function moveOU() {
       const ou = document.getElementById('ouSelect').value;
       const assetId = document.getElementById('assetId').value;

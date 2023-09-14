@@ -3,32 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Chromebook OU Mover</title>
-  <!-- (Rest of your head content) -->
-  <script>
-
-    var GoogleAuth;
-
-    function handleCredentialResponse(response) {
-      // Handle the credential response, and sign-in the user with gapi.client.
-      GoogleAuth.signIn();
-    }
-
-    function updateSigninStatus(isSignedIn) {
-      if (isSignedIn) {
-        document.getElementById("navbar").classList.remove("bg-danger");
-        document.getElementById("navbar").classList.add("bg-success");
-        document.querySelector(".navbar-brand").textContent = "Authorized";
-        document.getElementById("authButton").textContent = "Sign Out";
-        document.getElementById("authButton").onclick = GoogleAuth.signOut;
-      } else {
-        document.getElementById("navbar").classList.remove("bg-success");
-        document.getElementById("navbar").classList.add("bg-danger");
-        document.querySelector(".navbar-brand").textContent = "Unauthorized";
-        document.getElementById("authButton").textContent = "Sign In";
-        document.getElementById("authButton").onclick = GoogleAuth.signIn;
-      }
-    }
-  </script>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <style>
     /* Limit the log table height and make it scrollable */
@@ -47,9 +21,9 @@
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <div id="g_id_onload"
-         data-client_id="374006526743-lqkil23fnge0gpf3hbehn9d5mo6q553r.apps.googleusercontent.com"
-         data-callback="handleCredentialResponse">
-    </div>
+    data-client_id="374006526743-lqkil23fnge0gpf3hbehn9d5mo6q553r.apps.googleusercontent.com"
+    data-callback="handleCredentialResponse">
+  </div>
 
   <!-- Navbar -->
   <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-danger">
@@ -97,14 +71,35 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
   <script>
-    function signIn() {
-      GoogleAuth.signIn();
+
+    function handleCredentialResponse(response) {
+      // Handle the credential response.
+      // The response object should contain an ID token, which you can use
+      // to authenticate the user on your server.
+
+      // After server-side validation of the ID token, update UI accordingly
+      updateSigninStatus(true);
+    }
+
+    function updateSigninStatus(isSignedIn) {
+      if (isSignedIn) {
+        document.getElementById("navbar").classList.remove("bg-danger");
+        document.getElementById("navbar").classList.add("bg-success");
+        document.querySelector(".navbar-brand").textContent = "Authorized";
+        document.getElementById("authButton").textContent = "Sign Out";
+        document.getElementById("authButton").onclick = GoogleAuth.signOut;
+      } else {
+        // Should show the GSI button again...
+      }
     }
 
     function signOut() {
-      GoogleAuth.signOut(); // Sign out of Google Auth2
-      google.accounts.id.disableAutoSelect(); // Sign out of GSI
+      // Sign out from GSI
+      google.accounts.id.disableAutoSelect();
+      // Update UI
+      updateSigninStatus(false);
     }
+
 
     async function moveOU() {
       const ou = document.getElementById('ouSelect').value;

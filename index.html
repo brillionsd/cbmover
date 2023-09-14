@@ -83,11 +83,8 @@
 
     function updateSigninStatus(isSignedIn) {
       if (isSignedIn) {
-        document.getElementById("navbar").classList.remove("bg-danger");
-        document.getElementById("navbar").classList.add("bg-success");
-        document.querySelector(".navbar-brand").textContent = "Authorized";
-        document.getElementById("authButton").textContent = "Sign Out";
-        document.getElementById("authButton").onclick = GoogleAuth.signOut;
+        fetchOUs();
+        // Should show Sign Out
       } else {
         // Should show the GSI button again...
       }
@@ -100,6 +97,26 @@
       updateSigninStatus(false);
     }
 
+    async function fetchOUs() {
+      try {
+        const response = await fetch("/getOUs");
+        const data = await response.json();
+        const ouSelect = document.getElementById("ouSelect");
+        
+        // Remove any existing options
+        ouSelect.innerHTML = "";
+
+        // Add new options
+        data.ous.forEach(ou => {
+          const option = document.createElement("option");
+          option.value = ou.id;
+          option.textContent = ou.name;
+          ouSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Failed to fetch OUs:", error);
+      }
+    }
 
     async function moveOU() {
       const ou = document.getElementById('ouSelect').value;
@@ -127,15 +144,37 @@
         // Async move simulation
         progressBarInner.style.width = "100%";
         try {
-          // Simulate the async operation to move the Chromebook
-          // Replace this with an actual API call
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          progressBarInner.className = "progress-bar bg-success";
-          li.innerHTML = `Moved Asset ID ${assetId} to OU ${ou}`;
-        } catch(error) {
-          progressBarInner.className = "progress-bar bg-danger";
-          li.innerHTML = `Failed to move Asset ID ${assetId} to OU ${ou}`;
-        }
+        const moveOUPromise = new Promise((resolve, reject) => {
+          // Simulate API call to move OU
+          setTimeout(() => {
+            resolve("Moved OU");
+          }, 1000);
+        });
+
+        const removeProfilesPromise = removeProfiles ? new Promise((resolve, reject) => {
+          // Simulate API call to remove profiles
+          setTimeout(() => {
+            resolve("Removed profiles");
+          }, 1000);
+        }) : Promise.resolve("No profiles to remove");
+
+        const allPromises = [moveOUPromise, removeProfilesPromise];
+
+        let progress = 0;
+        allPromises.forEach(promise => {
+          promise.then(() => {
+            progress += 100 / allPromises.length;
+            progressBarInner.style.width = `${progress}%`;
+          });
+        });
+
+        await Promise.all(allPromises);
+        progressBarInner.className = "progress-bar bg-success";
+        li.innerHTML = `Moved Asset ID ${assetId} to OU ${ou}`;
+      } catch (error) {
+        progressBarInner.className = "progress-bar bg-danger";
+        li.innerHTML = `Failed to move Asset ID ${assetId} to OU ${ou}`;
+      }
 
         // Clear the Asset ID field for the next scan
         document.getElementById('assetId').value = '';
